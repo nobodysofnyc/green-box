@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>676FE918-CE2B-4A18-B003-4D47F482BA87</string>
+	<key>IDESourceControlProjectName</key>
+	<string>GreenBox</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>D6C0D2A42E43D37EFDEDF4A35E3B0C0EA4695BC2</key>
+		<string>https://github.com/nobodysofnyc/green-box.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>GreenBox.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>D6C0D2A42E43D37EFDEDF4A35E3B0C0EA4695BC2</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/nobodysofnyc/green-box.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>D6C0D2A42E43D37EFDEDF4A35E3B0C0EA4695BC2</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D6C0D2A42E43D37EFDEDF4A35E3B0C0EA4695BC2</string>
+			<key>IDESourceControlWCCName</key>
+			<string>GreenBox</string>
+		</dict>
+	</array>
+</dict>
+</plist>

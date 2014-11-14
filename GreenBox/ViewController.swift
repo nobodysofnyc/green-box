@@ -8,6 +8,8 @@
 
 import UIKit
 import GameKit
+import AVFoundation
+import AudioToolbox
 
 class ViewController: UIViewController, UIDynamicAnimatorDelegate, GKGameCenterControllerDelegate, UICollisionBehaviorDelegate {
     
@@ -27,9 +29,11 @@ class ViewController: UIViewController, UIDynamicAnimatorDelegate, GKGameCenterC
     
     var timeLeft: Float = 10.0
     
+    let levelTime: Float = 10.0
+    
     var timer: NSTimer?
     
-    let timerView = TimerView(frame: UIScreen.mainScreen().bounds)
+    var timerView: TimerView?
     
     var score = 0
     
@@ -38,7 +42,6 @@ class ViewController: UIViewController, UIDynamicAnimatorDelegate, GKGameCenterC
     var newGame = true
     
     @IBOutlet weak var scoreLabel: UILabel!
-    @IBOutlet weak var timerLabel: UILabel!
     @IBOutlet weak var newGameButton: UIButton!
     
     override func viewDidLoad() {
@@ -58,7 +61,9 @@ class ViewController: UIViewController, UIDynamicAnimatorDelegate, GKGameCenterC
         overlayView.backgroundColor = UIColor.clearColor()
         overlayView.frame = view.bounds
         view.insertSubview(overlayView, belowSubview: newGameButton)
-        view.insertSubview(timerView, atIndex: 0)
+        
+        timerView = TimerView(frame: view.bounds, time: levelTime)
+        view.insertSubview(timerView!, atIndex: 0)
     }
     
     func createNewGame() {
@@ -162,7 +167,6 @@ class ViewController: UIViewController, UIDynamicAnimatorDelegate, GKGameCenterC
     
     func figureOutGameCenter() {
         let player = GKLocalPlayer.localPlayer()
-        println(player.authenticated)
         player.authenticateHandler = {
             (viewController: UIViewController!, error: NSError!) -> Void in
             if viewController != nil {
@@ -174,6 +178,7 @@ class ViewController: UIViewController, UIDynamicAnimatorDelegate, GKGameCenterC
     func goToNextLevel() {
         newGame = true
         
+        timerView?.reset()
         resetViews()
         resetDynamics()
         createNewLevel()
@@ -189,7 +194,8 @@ class ViewController: UIViewController, UIDynamicAnimatorDelegate, GKGameCenterC
     
     func postScore() {
         let scoreReporter = GKScore(leaderboardIdentifier: "GreenBoxLeaderboard")
-        scoreReporter.value = 1
+        
+        scoreReporter.value = Int64(score)
         scoreReporter.context = 0
         
         let scores = [scoreReporter]
@@ -202,8 +208,8 @@ class ViewController: UIViewController, UIDynamicAnimatorDelegate, GKGameCenterC
     // MARK: Timer
     
     func startTimer() {
-        println("start timer")
         paused = false
+        println("start timer")
     }
     
     func stopTimer() {
@@ -217,27 +223,33 @@ class ViewController: UIViewController, UIDynamicAnimatorDelegate, GKGameCenterC
     
     func resetTimer() {
         endTimer()
-        println("reset timer")
-        timeLeft = 10.0
-        timerLabel.text = "10.0"
+        timeLeft = levelTime
         timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: "timerFired", userInfo: nil, repeats: true)
     }
     
     func timerFired() {
         if !paused {
             timeLeft -= 0.1;
-            self.timerLabel.text = NSString(format: "%0.2f", timeLeft)
+            println(timeLeft)
+            println(timeLeft == 2.0)
+            timerView?.updateForTime(timeLeft)
             if timeLeft <= 0 {
+                vibrate()
                 gameOver();
             }
         }
+    }
+    
+    func vibrate() {
+        AudioServicesPlaySystemSound(UInt32(kSystemSoundID_Vibrate))
     }
     
     func gameOver() {
         overlayView.hidden = false
         endTimer()
         postScore()
-        view.backgroundColor = UIColor.redColor()
+        timerView?.reset()
+        view.backgroundColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0)
         newGameButton.hidden = false
     }
     
@@ -252,8 +264,6 @@ class ViewController: UIViewController, UIDynamicAnimatorDelegate, GKGameCenterC
         let radians = atan2f(Float(blueBox.transform.b), Float(blueBox.transform.a))
         let degrees = radians * Float(180 / M_PI)
         let rotate = round(abs(degrees) % 90)
-        println(rotate)
-        println(degrees)
         if blueBox.center.y < greenBox.frame.origin.y {
             upDatScore()
             goToNextLevel()
@@ -269,10 +279,12 @@ class ViewController: UIViewController, UIDynamicAnimatorDelegate, GKGameCenterC
     // MARK: Delegate - UICollisionBehavoir
     
     func collisionBehavior(behavior: UICollisionBehavior, beganContactForItem item1: UIDynamicItem, withItem item2: UIDynamicItem, atPoint p: CGPoint) {
+        println("start collision")
         stopTimer()
     }
     
     func collisionBehavior(behavior: UICollisionBehavior, endedContactForItem item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying) {
+        println("stop collision")
         startTimer()
     }
     
